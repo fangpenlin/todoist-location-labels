@@ -137,7 +137,15 @@
                         {{ label['name'] }}
                         <ul>
                             {% for location_label in location_labels.get(label['id'], []) %}
-                                <li>{{ 'Arriving' if location_label.loc_trigger == 'on_enter' else 'Leaving' }} {{ location_label.name }}</li>
+                                <li style="height: 3em;">
+                                    {{ 'Arriving' if location_label.loc_trigger == 'on_enter' else 'Leaving' }} {{ location_label.name }}
+                                    <a
+                                        href="{{ url_for('delete_label_location', label_location_id=location_label.id) }}"
+                                        onclick="return confirm('Are you sure?')"
+                                        class="btn btn-outline-danger btn-sm">
+                                      <i class="fa fa-trash"></i> Delete
+                                    </a>
+                                </li>
                             {% endfor %}
                         </ul>
                     </li>

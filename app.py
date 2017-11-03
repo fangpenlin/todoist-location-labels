@@ -51,6 +51,16 @@ class LocationLabel(db.Model):
     radius = db.Column(db.Float, nullable=False)
 
 
+def get_current_user():
+    user_id = session.get('user_id')
+    if user_id is None:
+        abort(401)
+    user = User.query.get(user_id)
+    if user is None:
+        abort(401)
+    return user
+
+
 @app.route('/')
 def index():
     user_id = session.get('user_id')
@@ -118,14 +128,21 @@ def oauth_redirect():
     return redirect(url_for('index'))
 
 
+@app.route('/delete_label_location/<int:label_location_id>')
+def delete_label_location(label_location_id):
+    user = get_current_user()
+    label_location =  LocationLabel.query.get(label_location_id)
+    if label_location.user.id != user.id:
+        return abort(401)
+    
+    db.session.delete(label_location)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+
 @app.route('/create_label_location', methods=['POST'])
 def create_label_location():
-    user_id = session.get('user_id')
-    if user_id is None:
-        return abort(401)
-    user = User.query.get(user_id)
-    if user is None:
-        return abort(401)
+    user = get_current_user()
     label_id = request.form['label_id']
     trigger = request.form['trigger']
     address = request.form['address']
