@@ -1,0 +1,154 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+
+    <title>Todoist Location Label</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://use.fontawesome.com/6c3a90ea1a.js"></script>
+
+    <style>
+        /* Space out content a bit */
+        body {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+        }
+
+        /* Everything but the jumbotron gets side spacing for mobile first views */
+        .header,
+        .marketing,
+        .footer {
+        padding-right: 1rem;
+        padding-left: 1rem;
+        }
+
+        /* Custom page header */
+        .header {
+        padding-bottom: 1rem;
+        border-bottom: .05rem solid #e5e5e5;
+        }
+
+        /* Make the masthead heading the same height as the navigation */
+        .header h3 {
+        margin-top: 0;
+        margin-bottom: 0;
+        line-height: 3rem;
+        }
+
+        /* Custom page footer */
+        .footer {
+        padding-top: 1.5rem;
+        color: #777;
+        border-top: .05rem solid #e5e5e5;
+        }
+
+        /* Customize container */
+        @media (min-width: 48em) {
+        .container {
+            max-width: 46rem;
+        }
+        }
+        .container-narrow > hr {
+        margin: 2rem 0;
+        }
+
+        /* Main marketing message and sign up button */
+        .jumbotron {
+        text-align: center;
+        border-bottom: .05rem solid #e5e5e5;
+        }
+        .jumbotron .btn {
+        padding: .75rem 1.5rem;
+        font-size: 1.5rem;
+        }
+
+        /* Supporting marketing content */
+        .marketing {
+        margin: 3rem 0;
+        }
+        .marketing p + h4 {
+        margin-top: 1.5rem;
+        }
+
+        /* Responsive: Portrait tablets and up */
+        @media screen and (min-width: 48em) {
+        /* Remove the padding we set earlier */
+        .header,
+        .marketing,
+        .footer {
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        /* Space out the masthead */
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        /* Remove the bottom border on the jumbotron for visual effect */
+        .jumbotron {
+            border-bottom: 0;
+        }
+        }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="container">
+      <header class="header clearfix">
+        {% if session.get('user_id') %}
+        <nav>
+          <ul class="nav nav-pills float-right">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Logout {{ user_full_name }}</a>
+            </li>
+          </ul>
+        </nav>
+        {% endif %}
+        <h3 class="text-muted">Location Labels</h3>
+      </header>
+
+      <main role="main">
+
+        <div class="jumbotron">
+            <h1 class="display-3">Location Labels</h1>
+            <p class="lead">Service for creating Todoist location reminders by assigning labels.</p>
+
+            {% if not session.get('user_id') %}
+                <p><a class="btn btn-lg btn-success" href="{{ url_for('authorize') }}" role="button">Authorize</a></p>
+            {% endif %}
+        </div>
+
+        {% if session.get('user_id') %}
+        <div class="row marketing">
+            
+            <ul>
+            {% for label in labels %}
+                <li>{{ label['name'] }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <footer class="footer">
+            <p>By <a href="https://twitter.com/fangpenlin">@fangpenlin</a></p>
+            <p><i class="fa fa-github"></i> <a href="https://github.com/fangpenlin/todoist-location-labels">GitHub repo</a></p>
+        </footer>
+
+    </div> <!-- /container -->
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+  </body>
+</html>
