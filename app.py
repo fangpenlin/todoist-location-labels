@@ -119,6 +119,7 @@ def oauth_redirect():
     # XXX:
     print('#'*10, access_token, file=sys.stderr)
     api = todoist.TodoistAPI(access_token)
+    api.sync()
     user_id = api.user.get_id()
     user = User.query.get(user_id)
     if user is None:
