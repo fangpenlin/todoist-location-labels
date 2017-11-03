@@ -27,6 +27,7 @@ app.secret_key = os.environ['APP_SECRET_KEY']
 db = SQLAlchemy(app)
 client_id = os.environ['CLIENT_ID']
 client_secret = os.environ['CLIENT_SECRET']
+google_map_api_key = os.environ['GOOGLE_MAP_API_KEY']
 
 
 class User(db.Model):
@@ -53,7 +54,9 @@ class LocationLabel(db.Model):
 @app.route('/')
 def index():
     user_id = session.get('user_id')
-    kwargs = {}
+    kwargs = {
+        'google_map_api_key': google_map_api_key
+    }
     if user_id is not None:
         user = User.query.get(user_id)
         labels = requests.get(

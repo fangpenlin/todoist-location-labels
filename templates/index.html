@@ -129,12 +129,71 @@
 
         {% if session.get('user_id') %}
         <div class="row marketing">
-            
-            <ul>
-            {% for label in labels %}
-                <li>{{ label['name'] }}</li>
-            {% endfor %}
-            </ul>
+            <div class="col-lg-12">
+                <h4>Existing label locations</h4>
+                <ul>
+                {% for label in labels %}
+                    <li>{{ label['name'] }}</li>
+                {% endfor %}
+                </ul>
+
+                <h4>Add new label location</h4>
+                <form>
+                    <div class="form-group row">
+                        <label for="label" class="col-sm-2 col-form-label">Label</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="label">
+                                {% for label in labels %}
+                                    <option value="{{ label['id'] }}">{{ label['name'] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="autocomplete" class="col-sm-2 col-form-label">Address</label>
+                        <div class="col-sm-10">
+                            <input
+                                class="form-control"
+                                id="autocomplete"
+                                placeholder="Enter your address"
+                                type="text"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                            <label for="trigger" class="col-sm-2 col-form-label">Trigger</label>
+                            <div class="col-sm-10">
+                                <div class="form-check form-check-inline">
+                                    <label class="form-check-label">
+                                        <input
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="trigger"
+                                            id="trigger-on-enter"
+                                            value="on_enter"
+                                            required
+                                        >
+                                        Arriving
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <label class="form-check-label">
+                                        <input
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="trigger"
+                                            id="trigger-on-leave"
+                                            value="on_leave"
+                                        >
+                                        Leaving
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
         </div>
         {% endif %}
 
@@ -149,6 +208,20 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script>
+      var autocomplete;
+      function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+            {types: ['geocode']});
 
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        //autocomplete.addListener('place_changed', fillInAddress);
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ google_map_api_key }}&libraries=places&callback=initAutocomplete" async defer></script>
   </body>
 </html>
