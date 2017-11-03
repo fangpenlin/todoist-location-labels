@@ -1,6 +1,5 @@
 import sys
 import os
-import uuid
 import urllib.parse
 import base64
 import itertools
@@ -181,15 +180,27 @@ def webhook():
         return ''
     initiator = event['initiator']
     event_data = event['event_data']
+    app.logger.info(
+        'Received webhook event %s for %s',
+        event['event_name'],
+        event_data['id']
+    )
     user = User.query.get(initiator['id'])
     api = todoist.TodoistAPI(user.oauth_token)
     for label_id in event_data['labels']:
         loc_labels = user.location_labels.filter_by(label_id=label_id).all()
         if not loc_labels:
+            app.logger.info(
+                'No location labels found for label %s, skip',
+                label_id
+            )
             continue
         for loc_label in loc_labels:
-            temp_id = uuid.uuid4().hex
-            req_uuid = uuid.uuid4().hex
+            app.logger.info(
+                'Add location reminder for item %s from location label %s',
+                event_data['id'],
+                loc_label.id,
+            )
             api.reminders.add(
                 event_data['id'],
                 type='location',
