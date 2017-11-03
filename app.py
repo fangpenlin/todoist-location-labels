@@ -153,7 +153,7 @@ def delete_label_location(label_location_id):
 @app.route('/create_label_location', methods=['POST'])
 def create_label_location():
     user = get_current_user()
-    label_id = request.form['label_id']
+    label_id = int(request.form['label_id'])
     trigger = request.form['trigger']
     address = request.form['address']
     lat = float(request.form['lat'])
