@@ -128,10 +128,18 @@ def oauth_redirect():
     return redirect(url_for('index'))
 
 
+@app.route('/logout')
+def logout():
+    del session['user_id']
+    return redirect(url_for('index'))
+
+
 @app.route('/delete_label_location/<int:label_location_id>')
 def delete_label_location(label_location_id):
     user = get_current_user()
-    label_location =  LocationLabel.query.get(label_location_id)
+    label_location = LocationLabel.query.get(label_location_id)
+    if label_location is None:
+        return abort(404)
     if label_location.user.id != user.id:
         return abort(401)
     
