@@ -98,6 +98,19 @@
         }
         }
     </style>
+
+    {% if google_analytics_id %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{google_analytics_id}}"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', '{{google_analytics_id}}');
+    </script>
+    {% endif %}
+
   </head>
 
   <body>
@@ -120,7 +133,9 @@
 
         <div class="jumbotron">
             <h1 class="display-3">Location Labels</h1>
-            <p class="lead">Service for creating Todoist location reminders by assigning labels.</p>
+            <p class="lead">
+                Service for creating Todoist location reminders by assigning labels.
+            </p>
 
             {% if not session.get('user_id') %}
                 <p><a class="btn btn-lg btn-success" href="{{ url_for('authorize') }}" role="button">Authorize</a></p>

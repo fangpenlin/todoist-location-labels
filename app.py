@@ -27,6 +27,7 @@ db = SQLAlchemy(app)
 client_id = os.environ['CLIENT_ID']
 client_secret = os.environ['CLIENT_SECRET']
 google_map_api_key = os.environ['GOOGLE_MAP_API_KEY']
+google_analytics_id = os.environ.get('GOOGLE_ANALYTICS_ID')
 
 
 class User(db.Model):
@@ -64,7 +65,8 @@ def get_current_user():
 def index():
     user_id = session.get('user_id')
     kwargs = {
-        'google_map_api_key': google_map_api_key
+        'google_map_api_key': google_map_api_key,
+        'google_analytics_id': google_analytics_id
     }
     if user_id is not None:
         user = User.query.get(user_id)
