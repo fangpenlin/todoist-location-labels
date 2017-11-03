@@ -3,6 +3,7 @@ import os
 import uuid
 import urllib.parse
 import base64
+import itertools
 
 import todoist
 import requests
@@ -62,6 +63,14 @@ def index():
         kwargs['labels'] = labels
         api = todoist.TodoistAPI(user.oauth_token)
         kwargs['user_full_name'] = api.user.get('full_name')
+        # map from label id to location labels
+        location_labels = {}
+        for label_id, group in itertools.groupby(
+            user.location_labels.all(),
+            lambda ll: ll.label_id
+        ):
+            location_labels[label_id] = list(group)
+        kwargs['location_labels'] = location_labels
     return render_template('index.html', **kwargs)
 
 
