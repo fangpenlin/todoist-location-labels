@@ -75,6 +75,7 @@ def index():
         ).json()
         kwargs['labels'] = labels
         api = todoist.TodoistAPI(user.oauth_token)
+        api.sync()
         kwargs['user_full_name'] = api.user.get('full_name')
         # map from label id to location labels
         location_labels = {}
