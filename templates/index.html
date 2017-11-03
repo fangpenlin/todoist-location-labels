@@ -133,16 +133,23 @@
                 <h4>Existing label locations</h4>
                 <ul>
                 {% for label in labels %}
-                    <li>{{ label['name'] }}</li>
+                    <li>
+                        {{ label['name'] }}
+                        <ul>
+                            {% for location_label in location_labels.get(label['id'], []) %}
+                                <li>{{ 'Arriving' if location_label.loc_trigger == 'on_enter' else 'Leaving' }} {{ location_label.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
                 {% endfor %}
                 </ul>
 
                 <h4>Add new label location</h4>
-                <form>
+                <form action="{{ url_for('create_label_location') }}" method="POST">
                     <div class="form-group row">
                         <label for="label" class="col-sm-2 col-form-label">Label</label>
                         <div class="col-sm-10">
-                            <select class="form-control" id="label">
+                            <select class="form-control" id="label" name="label_id">
                                 {% for label in labels %}
                                     <option value="{{ label['id'] }}">{{ label['name'] }}</option>
                                 {% endfor %}
@@ -155,6 +162,7 @@
                             <input
                                 class="form-control"
                                 id="autocomplete"
+                                name="address"
                                 placeholder="Enter your address"
                                 type="text"
                                 required

@@ -118,6 +118,34 @@ def oauth_redirect():
     return redirect(url_for('index'))
 
 
+@app.route('/create_label_location', methods=['POST'])
+def create_label_location():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return abort(401)
+    user = User.query.get(user_id)
+    if user is None:
+        return abort(401)
+    label_id = request.form['label_id']
+    trigger = request.form['trigger']
+    address = request.form['address']
+    lat = float(request.form['lat'])
+    long = float(request.form['long'])
+    radius = float(request.form.get('radius', 300))
+    location_label = LocationLabel(
+        user=user,
+        label_id=label_id,
+        loc_trigger=trigger,
+        long=long,
+        lat=lat,
+        name=address,
+        radius=radius,
+    )
+    db.session.add(location_label)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     event = request.json
