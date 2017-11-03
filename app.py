@@ -31,19 +31,19 @@ google_map_api_key = os.environ['GOOGLE_MAP_API_KEY']
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.BigInteger, primary_key=True)
     oauth_token = db.Column(db.String(64), nullable=True)
 
 
 class LocationLabel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+    user_id = db.Column(db.BigInteger, db.ForeignKey('user.id'),
         nullable=False)
     user= db.relationship(
         'User',
         backref=db.backref('location_labels', lazy='dynamic')
     )
-    label_id = db.Column(db.Integer, nullable=False, index=True)
+    label_id = db.Column(db.BigInteger, nullable=False, index=True)
     name = db.Column(db.String, nullable=False)
     long = db.Column(db.Float, nullable=False)
     lat = db.Column(db.Float, nullable=False)
