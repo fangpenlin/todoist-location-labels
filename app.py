@@ -116,14 +116,13 @@ def oauth_redirect():
     ))
     resp.raise_for_status()
     access_token = resp.json()['access_token']
-    # XXX:
-    print('#'*10, access_token, file=sys.stderr)
     api = todoist.TodoistAPI(access_token)
     api.sync()
     user_id = api.user.get_id()
     user = User.query.get(user_id)
     if user is None:
         user = User(id=user_id, oauth_token=access_token)
+        db.session.add(user)
     else:
         user.oauth_token = access_token
     db.session.commit()
