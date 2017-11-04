@@ -153,13 +153,15 @@
                         <ul>
                             {% for location_label in location_labels.get(label['id'], []) %}
                                 <li style="height: 3em;">
-                                    {{ 'Arriving' if location_label.loc_trigger == 'on_enter' else 'Leaving' }} {{ location_label.name }}
                                     <a
                                         href="{{ url_for('delete_label_location', label_location_id=location_label.id) }}"
                                         onclick="return confirm('Are you sure?')"
-                                        class="btn btn-outline-danger btn-sm">
-                                      <i class="fa fa-trash"></i> Delete
+                                        class="btn btn-outline-danger btn-sm"
+                                        title="delete"
+                                    >
+                                      <i class="fa fa-trash"></i>
                                     </a>
+                                    {{ 'Arriving' if location_label.loc_trigger == 'on_enter' else 'Leaving' }} ({{ location_label.radius }} M) {{ location_label.name }}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -170,8 +172,8 @@
                 <h4>Add new label location</h4>
                 <form action="{{ url_for('create_label_location') }}" method="POST">
                     <div class="form-group row">
-                        <label for="label" class="col-sm-2 col-form-label">Label</label>
-                        <div class="col-sm-10">
+                        <label for="label" class="col-sm-3 col-form-label">Label</label>
+                        <div class="col-sm-9">
                             <select class="form-control" id="label" name="label_id">
                                 {% for label in labels %}
                                     <option value="{{ label['id'] }}">{{ label['name'] }}</option>
@@ -180,8 +182,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="autocomplete" class="col-sm-2 col-form-label">Address</label>
-                        <div class="col-sm-10">
+                        <label for="autocomplete" class="col-sm-3 col-form-label">Address</label>
+                        <div class="col-sm-9">
                             <input
                                 class="form-control"
                                 id="autocomplete"
@@ -193,8 +195,21 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="trigger" class="col-sm-2 col-form-label">Trigger</label>
-                        <div class="col-sm-10">
+                            <label for="radius" class="col-sm-3 col-form-label">Radius (meters)</label>
+                            <div class="col-sm-9">
+                                <input
+                                    class="form-control"
+                                    id="radius"
+                                    name="radius"
+                                    type="text"
+                                    value="100"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    <div class="form-group row">
+                        <label for="trigger" class="col-sm-3 col-form-label">Trigger</label>
+                        <div class="col-sm-9">
                             <div class="form-check form-check-inline">
                                 <label class="form-check-label">
                                     <input
