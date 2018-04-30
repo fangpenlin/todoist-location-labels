@@ -207,8 +207,8 @@ def webhook():
                 event_data['id'],
                 type='location',
                 name=loc_label.name,
-                loc_lat=loc_label.lat,
-                loc_long=loc_label.long,
+                loc_lat=str(loc_label.lat),
+                loc_long=str(loc_label.long),
                 loc_trigger=loc_label.loc_trigger,
                 radius=loc_label.radius 
             )
