@@ -205,10 +205,20 @@ def webhook():
             continue
         for loc_label in loc_labels:
             app.logger.info(
-                'Add location reminder for item %s from location label %s',
+                'Adding location reminder for item %s from location label %s',
                 event_data['id'],
                 loc_label.id,
             )
+            existing_reminder = list(filter (lambda x: x['name'] == loc_label.name, (
+                filter(lambda x: x['item_id'] == event_data['id'] and x['type'] == 'location', api.state['reminders']))))
+            if existing_reminder:
+                app.logger.info(
+                    'Not adding location reminder for item %s from location label %s, does already exist!',
+                    event_data['id'],
+                    loc_label.id,
+                )
+                continue
+
             api.reminders.add(
                 event_data['id'],
                 type='location',
@@ -217,6 +227,11 @@ def webhook():
                 loc_long=str(loc_label.long),
                 loc_trigger=loc_label.loc_trigger,
                 radius=loc_label.radius 
+            )
+            app.logger.info(
+                'Location reminder added for item %s from location label %s',
+                event_data['id'],
+                loc_label.id,
             )
     api.commit()
     return 'ok'
