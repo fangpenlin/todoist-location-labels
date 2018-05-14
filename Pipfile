@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 
+psycopg2-binary = "*"
+gunicorn = "*"
 flask = "*"
 "flask-sqlalchemy" = "*"
 "todoist-python" = "*"

@@ -1,5 +1,6 @@
 import sys
 import os
+import logging
 import urllib.parse
 import base64
 import itertools
@@ -18,6 +19,11 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
+if 'DYNO' in os.environ:
+    app.logger.addHandler(logging.StreamHandler(sys.stdout))
+    app.logger.setLevel(logging.INFO)
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL',
     'sqlite:////tmp/test.db'
