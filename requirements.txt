@@ -1,2 +1,6 @@
 psycopg2
 gunicorn
+todoist-python==0.2.13
+requests
+Flask
+Flask-SQLAlchemy
