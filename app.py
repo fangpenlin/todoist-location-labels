@@ -77,7 +77,7 @@ def index():
     if user_id is not None:
         user = User.query.get(user_id)
         labels = requests.get(
-            'https://beta.todoist.com/API/v8/labels',
+            'https://api.todoist.com/rest/v1/labels',
             params=dict(token=user.oauth_token)
         ).json()
         kwargs['labels'] = labels
