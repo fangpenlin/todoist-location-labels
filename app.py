@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 if 'DYNO' in os.environ:
     app.logger.addHandler(logging.StreamHandler(sys.stdout))
-    app.logger.setLevel(logging.INFO)
+    app.logger.setLevel(logging.DEBUG)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
