@@ -26,7 +26,7 @@ if 'DYNO' in os.environ:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL',
-    'sqlite:////tmp/test.db'
+    'sqlite:///test.db'
 )
 app.secret_key = os.environ['APP_SECRET_KEY']
 db = SQLAlchemy(app)
@@ -102,7 +102,7 @@ def authorize():
     return redirect(
         'https://todoist.com/oauth/authorize?' + urllib.parse.urlencode(dict(
             client_id=client_id,
-            scope='data:read_write',
+            scope='data:read_write,data:delete',
             state=state,
         ))
     )
@@ -184,6 +184,7 @@ def create_label_location():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     event = request.json
+    # app.logger.info('Full event: %s', event)
     if event['event_name'] not in ['item:added', 'item:updated']:
         return ''
     initiator = event['initiator']
@@ -196,6 +197,16 @@ def webhook():
     )
     user = User.query.get(initiator['id'])
     api = todoist.TodoistAPI(user.oauth_token)
+    api.sync()
+    item_reminders = list(filter(lambda x: x['type'] == 'location' and x['item_id']==event_data['id'] , api.reminders.all()))
+    not_used_location_labels = user.location_labels.filter(~LocationLabel.label_id.in_(event_data['labels'])).all()
+    to_be_deleted_reminders = list(filter(lambda x: x['name'] in map(lambda y: y.name, not_used_location_labels) and x['loc_trigger'] in map(lambda y: y.loc_trigger, not_used_location_labels) and x['radius'] in map(lambda y: y.radius, not_used_location_labels), item_reminders))
+    for reminder in to_be_deleted_reminders:
+        app.logger.info(
+            'Reminder found that should be deleted: %s, deleting',
+            reminder['id']
+        )
+        api.reminders.delete(reminder['id']);
     for label_id in event_data['labels']:
         loc_labels = user.location_labels.filter_by(label_id=label_id).all()
         if not loc_labels:
@@ -210,8 +221,8 @@ def webhook():
                 event_data['id'],
                 loc_label.id,
             )
-            existing_reminder = list(filter (lambda x: x['name'] == loc_label.name, (
-                filter(lambda x: x['item_id'] == event_data['id'] and x['type'] == 'location', api.state['reminders']))))
+            api_reminders = filter(lambda x: x['item_id'] == event_data['id'] and x['type'] == 'location', api.state['reminders'])
+            existing_reminder = list(filter (lambda x: x['name'] == loc_label.name and x['loc_trigger'] == loc_label.loc_trigger and x['radius'] == loc_label.radius, api_reminders))
             if existing_reminder:
                 app.logger.info(
                     'Not adding location reminder for item %s from location label %s, does already exist!',
