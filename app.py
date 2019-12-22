@@ -20,7 +20,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 if 'DYNO' in os.environ:
-    app.logger.addHandler(logging.StreamHandler(sys.stdout))
+    # app.logger.addHandler(logging.StreamHandler(sys.stdout))
     app.logger.setLevel(logging.INFO)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -152,7 +152,7 @@ def delete_label_location(label_location_id):
         return abort(404)
     if label_location.user.id != user.id:
         return abort(401)
-    
+
     db.session.delete(label_location)
     db.session.commit()
     return redirect(url_for('index'))
@@ -189,9 +189,10 @@ def webhook():
     initiator = event['initiator']
     event_data = event['event_data']
     app.logger.info(
-        'Received webhook event %s for %s',
+        'Received webhook event %s for %s with info: %s',
         event['event_name'],
-        event_data['id']
+        event_data['id'],
+        event_data
     )
     user = User.query.get(initiator['id'])
     api = todoist.TodoistAPI(user.oauth_token)
@@ -226,7 +227,7 @@ def webhook():
                 loc_lat=str(loc_label.lat),
                 loc_long=str(loc_label.long),
                 loc_trigger=loc_label.loc_trigger,
-                radius=loc_label.radius 
+                radius=loc_label.radius
             )
             app.logger.info(
                 'Location reminder added for item %s from location label %s',
